@@ -493,7 +493,9 @@ class RawFirBuilder(
 
                 dispatchReceiverType = currentDispatchReceiverType()
             }.apply {
-                isFromVararg = firParameter.isVararg
+                if (firParameter.isVararg) {
+                    isFromVararg = true
+                }
             }
         }
 
