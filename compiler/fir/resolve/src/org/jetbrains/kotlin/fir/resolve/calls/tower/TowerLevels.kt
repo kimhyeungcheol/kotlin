@@ -132,14 +132,15 @@ class MemberScopeTowerLevel(
         if (implicitExtensionInvokeMode && !isInvoke) {
             return ProcessResult.FOUND
         }
+        val lookupTracker = session.lookupTracker
         return processMembers(processor) { consumer ->
-            session.lookupTracker?.recordCallLookup(info, dispatchReceiverValue.type)
+            lookupTracker?.recordCallLookup(info, dispatchReceiverValue.type)
             val lookupScopes = SmartList<String>()
             this.processFunctionsAndConstructorsByName(
                 info.name, session, bodyResolveComponents,
                 includeInnerConstructors = true,
                 processor = {
-                    session.lookupTracker?.run {
+                    lookupTracker?.run {
                         recordTypeResolveAsLookup(it.fir.returnTypeRef, info.callSite.source, info.containingFile.source)
                         it.callableId.className?.let { lookupScope ->
                             lookupScopes.add(lookupScope.asString())
@@ -150,7 +151,7 @@ class MemberScopeTowerLevel(
                     consumer(it as FirFunctionSymbol<*>)
                 }
             )
-            session.lookupTracker?.recordCallLookup(info, lookupScopes)
+            lookupTracker?.recordCallLookup(info, lookupScopes)
         }
     }
 
@@ -158,10 +159,11 @@ class MemberScopeTowerLevel(
         info: CallInfo,
         processor: TowerScopeLevelProcessor<FirVariableSymbol<*>>
     ): ProcessResult {
+        val lookupTracker = session.lookupTracker
         return processMembers(processor) { consumer ->
-            session.lookupTracker?.recordCallLookup(info, dispatchReceiverValue.type)
+            lookupTracker?.recordCallLookup(info, dispatchReceiverValue.type)
             this.processPropertiesByName(info.name) {
-                session.lookupTracker?.recordTypeResolveAsLookup(it.fir.returnTypeRef, info.callSite.source, info.containingFile.source)
+                lookupTracker?.recordTypeResolveAsLookup(it.fir.returnTypeRef, info.callSite.source, info.containingFile.source)
                 // WARNING, DO NOT CAST FUNCTIONAL TYPE ITSELF
                 @Suppress("UNCHECKED_CAST")
                 consumer(it)

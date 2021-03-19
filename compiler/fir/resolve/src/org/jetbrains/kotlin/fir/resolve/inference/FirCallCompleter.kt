@@ -208,16 +208,17 @@ class FirCallCompleter(
                 }
             )
 
+            val lookupTracker = session.lookupTracker
             lambdaArgument.valueParameters.forEachIndexed { index, parameter ->
                 val newReturnTypeRef = parameter.returnTypeRef.resolvedTypeFromPrototype(parameters[index].approximateLambdaInputType())
                 parameter.replaceReturnTypeRef(newReturnTypeRef)
-                session.lookupTracker?.recordTypeResolveAsLookup(newReturnTypeRef, parameter.source, null)
+                lookupTracker?.recordTypeResolveAsLookup(newReturnTypeRef, parameter.source, null)
             }
 
             lambdaArgument.replaceValueParameters(lambdaArgument.valueParameters + listOfNotNull(itParam))
             lambdaArgument.replaceReturnTypeRef(
                 expectedReturnTypeRef?.also {
-                    session.lookupTracker?.recordTypeResolveAsLookup(it, lambdaArgument.source, null)
+                    lookupTracker?.recordTypeResolveAsLookup(it, lambdaArgument.source, null)
                 } ?: components.noExpectedType
             )
 
