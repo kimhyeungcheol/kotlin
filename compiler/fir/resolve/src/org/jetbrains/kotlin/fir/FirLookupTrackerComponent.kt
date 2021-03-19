@@ -15,8 +15,6 @@ abstract class FirLookupTrackerComponent : FirSessionComponent {
     abstract fun recordLookup(name: Name, inScopes: List<String>, source: FirSourceElement?, fileSource: FirSourceElement?)
 
     abstract fun recordLookup(name: Name, inScope: String, source: FirSourceElement?, fileSource: FirSourceElement?)
-
-    abstract fun flushLookups()
 }
 
 fun FirLookupTrackerComponent.recordCallLookup(callInfo: CallInfo, inType: ConeKotlinType) {

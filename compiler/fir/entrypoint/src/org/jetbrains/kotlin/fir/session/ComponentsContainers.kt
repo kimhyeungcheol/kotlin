@@ -70,11 +70,7 @@ fun FirSession.registerResolveComponents(lookupTracker: LookupTracker? = null) {
         }
         register(
             FirLookupTrackerComponent::class,
-            if (lookupTracker.requiresPosition) {
-                DebugIncrementalCompilationLookupTrackerComponent(lookupTracker, firFileToPath)
-            } else {
-                IncrementalPassThroughCompilationLookupTrackerComponent(lookupTracker, firFileToPath)
-            }
+            IncrementalPassThroughLookupTrackerComponent(lookupTracker, firFileToPath)
         )
     }
 }
