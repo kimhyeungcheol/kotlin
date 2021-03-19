@@ -182,6 +182,11 @@ open class ProtoCompareGenerated(
 
         if (!checkEqualsClassSealedSubclassFqName(old, new)) return false
 
+        if (old.hasInlineClassUnderlyingPropertyName() != new.hasInlineClassUnderlyingPropertyName()) return false
+        if (old.hasInlineClassUnderlyingPropertyName()) {
+            if (!checkStringEquals(old.inlineClassUnderlyingPropertyName, new.inlineClassUnderlyingPropertyName)) return false
+        }
+
         if (!checkEqualsClassVersionRequirement(old, new)) return false
 
         if (old.hasVersionRequirementTable() != new.hasVersionRequirementTable()) return false
@@ -271,6 +276,7 @@ open class ProtoCompareGenerated(
         TYPE_ALIAS_LIST,
         ENUM_ENTRY_LIST,
         SEALED_SUBCLASS_FQ_NAME_LIST,
+        INLINE_CLASS_UNDERLYING_PROPERTY_NAME,
         VERSION_REQUIREMENT_LIST,
         VERSION_REQUIREMENT_TABLE,
         JVM_EXT_CLASS_MODULE_NAME,
@@ -319,6 +325,11 @@ open class ProtoCompareGenerated(
         if (!checkEqualsClassEnumEntry(old, new)) result.add(ProtoBufClassKind.ENUM_ENTRY_LIST)
 
         if (!checkEqualsClassSealedSubclassFqName(old, new)) result.add(ProtoBufClassKind.SEALED_SUBCLASS_FQ_NAME_LIST)
+
+        if (old.hasInlineClassUnderlyingPropertyName() != new.hasInlineClassUnderlyingPropertyName()) result.add(ProtoBufClassKind.INLINE_CLASS_UNDERLYING_PROPERTY_NAME)
+        if (old.hasInlineClassUnderlyingPropertyName()) {
+            if (!checkStringEquals(old.inlineClassUnderlyingPropertyName, new.inlineClassUnderlyingPropertyName)) result.add(ProtoBufClassKind.INLINE_CLASS_UNDERLYING_PROPERTY_NAME)
+        }
 
         if (!checkEqualsClassVersionRequirement(old, new)) result.add(ProtoBufClassKind.VERSION_REQUIREMENT_LIST)
 
@@ -1752,6 +1763,10 @@ fun ProtoBuf.Class.hashCode(stringIndexes: (Int) -> Int, fqNameIndexes: (Int) ->
 
     for(i in 0..sealedSubclassFqNameCount - 1) {
         hashCode = 31 * hashCode + fqNameIndexes(getSealedSubclassFqName(i))
+    }
+
+    if (hasInlineClassUnderlyingPropertyName()) {
+        hashCode = 31 * hashCode + stringIndexes(inlineClassUnderlyingPropertyName)
     }
 
     for(i in 0..versionRequirementCount - 1) {
