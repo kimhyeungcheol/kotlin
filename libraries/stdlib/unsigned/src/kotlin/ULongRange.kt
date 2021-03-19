@@ -70,7 +70,7 @@ internal constructor(
      */
     public val step: Long = step
 
-    override fun iterator(): ULongIterator = ULongProgressionIterator(first, last, step)
+    final override fun iterator(): Iterator<ULong> = ULongProgressionIterator(first, last, step)
 
     /** Checks if the progression is empty. */
     public open fun isEmpty(): Boolean = if (step > 0) first > last else first < last
